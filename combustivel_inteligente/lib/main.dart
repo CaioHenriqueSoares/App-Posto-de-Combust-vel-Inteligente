@@ -50,7 +50,11 @@ class _AnalisadorCombustivelState extends State<AnalisadorCombustivel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('App Posto de Combutível Inteligente')),
+      appBar: AppBar(
+        title: const Text('Posto Inteligente'),
+        centerTitle: true,
+        backgroundColor: Colors.green,
+        ),
       //body: SingleChildScrollView( // Para evitar overflow quando o teclado aparecer )
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -62,6 +66,7 @@ class _AnalisadorCombustivelState extends State<AnalisadorCombustivel> {
               isExpanded: true,
               onChanged: (String? novoValor) {
                 setState(() => _nivelFidelidade = novoValor!);
+                _analisar();
               },
               items: ['Basico', 'Prata', 'Ouro']
                   .map(
@@ -70,25 +75,36 @@ class _AnalisadorCombustivelState extends State<AnalisadorCombustivel> {
                   )
                   .toList(),
             ),
+            const SizedBox(height: 20),
             TextField(
               controller: _precoGasolinaController,
-              decoration: const InputDecoration(labelText: 'Preço da gasolina'),
               keyboardType: TextInputType.number,
-            ),
-            TextField(
-              controller: _precoAlcoolController,
-              decoration: const InputDecoration(labelText: 'Preço do alcool'),
-              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Preço da gasolina',
+                prefixIcon: Icon(Icons.local_gas_station),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                onChanged: (_) => _analisar(),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(onPressed: _analisar, child: const Text('Analisar')),
+            TextField(
+              controller: _precoAlcoolController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Preço do alcool',
+                prefixIcon: Icon(Icons.local_gas_station),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+              onChanged: (_) => _analisar(),
+            ),
+            const SizedBox(height: 20),
             const SizedBox(height: 20),
 
             // 3. TERNÁRIO na Interface (UI)
             Icon(
               _compensa == null
                   ? Icons.info
-                  : (_compensa! ? Icons.check_circle : Icons.cancel),
+                  : (_compensa! ? Icons.local_gas_station : Icons.local_gas_station),
               color: _compensa == null
                   ? Colors.grey
                   : (_compensa! ? Colors.green : Colors.red),
