@@ -17,6 +17,28 @@ class _AnalisadorCombustivelState extends State<AnalisadorCombustivel> {
   String _resultado = 'Informe os valores';
   bool? _compensa;
 
+  Color _corFidelidade() {
+    switch (_nivelFidelidade) {
+      case 'Prata':
+        return Colors.grey;
+      case 'Ouro':
+        return Colors.amber;
+      default:
+        return Colors.blue;
+    }
+  }
+
+  IconData _iconeFidelidade() {
+    switch (_nivelFidelidade) {
+      case 'Prata':
+        return Icons.star;
+      case 'Ouro':
+        return Icons.workspace_premium;
+      default:
+        return Icons.person;
+    }
+  }
+
   void _analisar() {
     double precoGasolina =
         double.tryParse(_precoGasolinaController.text) ?? 0.0;
@@ -54,16 +76,23 @@ class _AnalisadorCombustivelState extends State<AnalisadorCombustivel> {
         title: const Text('Posto Inteligente'),
         centerTitle: true,
         backgroundColor: Colors.green,
-        ),
+      ),
       //body: SingleChildScrollView( // Para evitar overflow quando o teclado aparecer )
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             // Dropdown para mudar o tipo (que afetará o Switch)
-            DropdownButton<String>(
-              value: _nivelFidelidade,
+            DropdownButtonFormField<String>(
+              initialValue: _nivelFidelidade,
               isExpanded: true,
+              decoration: InputDecoration(
+                labelText: 'Nível de Fidelidade',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                prefixIcon: Icon(_iconeFidelidade(), color: _corFidelidade()),
+              ),
               onChanged: (String? novoValor) {
                 setState(() => _nivelFidelidade = novoValor!);
                 _analisar();
@@ -81,10 +110,12 @@ class _AnalisadorCombustivelState extends State<AnalisadorCombustivel> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Preço da gasolina',
-                prefixIcon: Icon(Icons.local_gas_station),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                prefixIcon: Icon(Icons.local_gas_station, color: Colors.red),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                onChanged: (_) => _analisar(),
+              ),
+              onChanged: (_) => _analisar(),
             ),
             const SizedBox(height: 20),
             TextField(
@@ -92,9 +123,11 @@ class _AnalisadorCombustivelState extends State<AnalisadorCombustivel> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Preço do alcool',
-                prefixIcon: Icon(Icons.local_gas_station),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                prefixIcon: Icon(Icons.local_gas_station, color: Colors.green),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
+              ),
               onChanged: (_) => _analisar(),
             ),
             const SizedBox(height: 20),
@@ -104,7 +137,9 @@ class _AnalisadorCombustivelState extends State<AnalisadorCombustivel> {
             Icon(
               _compensa == null
                   ? Icons.info
-                  : (_compensa! ? Icons.local_gas_station : Icons.local_gas_station),
+                  : (_compensa!
+                        ? Icons.local_gas_station
+                        : Icons.local_gas_station),
               color: _compensa == null
                   ? Colors.grey
                   : (_compensa! ? Colors.green : Colors.red),
